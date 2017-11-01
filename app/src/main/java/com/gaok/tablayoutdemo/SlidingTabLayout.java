@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 
 /**
  * 支持自定义下标，自定义tab宽度
- *
+ * <p>
  * 自定义下标    --> {@link #setmSlideIcon}
  * 自定义tab宽度 --> 由{@link #COUNT_DEFAULT_VISIBLE_TAB}和{@link #RATIO_DEFAULT_LAST_VISIBLE_TAB}共同决定
  *
@@ -71,12 +71,39 @@ public class SlidingTabLayout extends TabLayout {
         super(context, attrs);
         this.mSlideIcon = BitmapFactory.decodeResource(getResources(), R.drawable.home_jiaobiao);
         this.mScreenWidth = getResources().getDisplayMetrics().widthPixels;
+
+        //方案1：反射修改Tab宽度
+        //reflectiveModifyTabWidth();
+
+        //方案2：异步修改Tab宽度
         post(new Runnable() {
             @Override
             public void run() {
                 resetTabParams();
             }
         });
+    }
+
+    private void reflectiveModifyTabWidth() {
+        final Class<?> clz = TabLayout.class;
+        try {
+            final Field requestedTabMaxWidthField = clz.getDeclaredField("mRequestedTabMaxWidth");
+            final Field requestedTabMinWidthField = clz.getDeclaredField("mRequestedTabMinWidth");
+
+            requestedTabMaxWidthField.setAccessible(true);
+            requestedTabMaxWidthField.set(this, (int) (mScreenWidth / (mTabVisibleCount + mLastTabVisibleRatio)));
+
+            requestedTabMinWidthField.setAccessible(true);
+            requestedTabMinWidthField.set(this, (int) (mScreenWidth / (mTabVisibleCount + mLastTabVisibleRatio)));
+        } catch (final NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (final SecurityException e) {
+            e.printStackTrace();
+        } catch (final IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (final IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -120,7 +147,7 @@ public class SlidingTabLayout extends TabLayout {
      */
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if(mSlideIcon == null){
+        if (mSlideIcon == null) {
             return;
         }
         canvas.save();
@@ -149,7 +176,6 @@ public class SlidingTabLayout extends TabLayout {
             tabView.setClipToPadding(false);
 
             tabView.setPadding(0, 30, 0, 30);
-            tabView.invalidate();
         }
         initTranslationParams(tabStrip, mScreenWidth);
     }
