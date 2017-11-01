@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="radiobuttonzhong">#ef4147</color>
+    <color name="radiobutton">#514b4b</color>
+
+    <color name="dibu">#eeeeee</color>
+    <color name="baise">#ffffff</color>
+    <color name="myfragment_heald">#413f3f</color>
+</resources>
