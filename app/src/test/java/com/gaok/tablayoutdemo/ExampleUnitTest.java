@@ -1,4 +1,4 @@
-package com.xyliwp.tablayoutdemo;
+package com.gaok.tablayoutdemo;
 
 import org.junit.Test;
 
